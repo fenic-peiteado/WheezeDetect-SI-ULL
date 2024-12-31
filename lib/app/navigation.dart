@@ -12,37 +12,41 @@ class _NavigationPageState extends State<NavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final pages = [HomePage(), DataAnalysisPage()];
-
-    return Scaffold(
+    return StatefulBuilder(
+      builder: (context, setState) => Scaffold(
       body: Row(
         children: [
-          SafeArea(
-            child: NavigationRail(
-              extended: false,
-              destinations: [
-                NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text('Home'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.analytics),
-                  label: Text('Data Analysis'),
-                ),
-              ],
-              selectedIndex: selectedIndex,
-              onDestinationSelected: (value) {
-                setState(() {
-                  selectedIndex = value;
-                });
-              },
-            ),
+          NavigationRail(
+            extended: false,
+            destinations: [
+              NavigationRailDestination(
+                icon: Icon(Icons.home),
+                label: Text('Home'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.analytics),
+                label: Text('Data Analysis'),
+              ),
+            ],
+            selectedIndex: selectedIndex,
+            onDestinationSelected: (value) {
+              setState(() {
+                selectedIndex = value;
+              });
+            },
           ),
           Expanded(
-            child: pages[selectedIndex],
+            child: IndexedStack( // IndexedStack es un widget que se usa para mostrar solo un widget hijo a la vez
+              index: selectedIndex,
+              children: [
+                HomePage(),
+                DataAnalysisPage(),
+              ],
+            ),
           ),
         ],
       ),
+    )
     );
   }
 }

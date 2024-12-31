@@ -14,12 +14,12 @@ class DataService {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        return responseData['message'] ?? 'Datos enviados con éxito';
+        return responseData['message'] ?? 'Data sent successfully';
       } else {
         return 'Error: ${response.statusCode}';
       }
     } catch (e) {
-      return 'Error de conexión: $e';
+      return 'Error of connection: $e';
     }
   }
 }

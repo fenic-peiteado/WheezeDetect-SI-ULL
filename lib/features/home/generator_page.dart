@@ -15,14 +15,13 @@ class GeneratorPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //BigCard(pair: pair),
             ImageCard(imagePath: imagePath),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: appState.getNext,
-                  child: Text('Subir Imagen'),
+                  child: Text('Subirr Imagen'),
                 ),
                 ElevatedButton.icon(
                   onPressed: appState.toggleFavorite,
