@@ -1,6 +1,8 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -63,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
         break;
       case 1:
-        page = Placeholder();
+        page = DataAnalysisPage(); // Nueva pestaña con funcionalidad de servidor
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -72,17 +74,16 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Row(
         children: [
-          SafeArea( // SafeArea es un widget que se usa para evitar que el contenido se superponga con la barra de estado
-            child: NavigationRail( // NavigationRail es un widget que se usa para crear una barra de navegación lateral
-              extended: false, // extended es un booleano que se usa para extender la barra de navegación lateral
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary, // backgroundColor es un color que se usa para establecer el color de fondo de la barra de navegación lateral
+          SafeArea(
+            child: NavigationRail(
+              extended: false,
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               destinations: [
-                NavigationRailDestination( // NavigationRailDestination es un widget que se usa para crear un destino de navegación 
+                NavigationRailDestination(
                   icon: Icon(Icons.home),
                   label: Text('Home'),
                 ),
-                NavigationRailDestination( // iconos sobre machine learning
-                  // iconos sobre data analysis
+                NavigationRailDestination(
                   icon: Icon(Icons.analytics),
                   label: Text('Data Analysis'),
                 ),
@@ -95,13 +96,71 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
-          Expanded( // Expanded es un widget que se usa para expandir un widget hijo para que ocupe todo el espacio disponible
+          Expanded(
             child: Container(
               color: Theme.of(context).colorScheme.primaryContainer,
               child: page,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Página con funcionalidad de análisis de datos
+class DataAnalysisPage extends StatefulWidget {
+  @override
+  _DataAnalysisPageState createState() => _DataAnalysisPageState();
+}
+
+class _DataAnalysisPageState extends State<DataAnalysisPage> {
+  String buttonText = "Enviar Datos";
+
+  // Función para enviar los datos y recibir la respuesta
+  Future<void> sendData() async {
+  final String url = 'https://03a2-34-86-192-105.ngrok-free.app/receive_data';  // Asegúrate de que esta URL sea la correcta
+
+  final Map<String, dynamic> data = {
+    'name': 'Flutter',
+    'message': 'Hola desde Flutter'
+  };
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(data),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      setState(() {
+        buttonText = responseData['message'];
+      });
+    } else {
+      setState(() {
+        buttonText = "Error: ${response.statusCode}";  // Muestra el código de error HTTP
+      });
+    }
+  } catch (e) {
+    setState(() { 
+      buttonText = "Error de conexión: $e";  // Muestra el error detallado
+    });
+  }
+}
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Data Analysis'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: sendData,
+          child: Text(buttonText),
+        ),
       ),
     );
   }
@@ -114,7 +173,6 @@ class GeneratorPage extends StatelessWidget {
     var pair = appState.current;
     final theme = Theme.of(context);
 
-// ...
     IconData icon;
     if (appState.favorites.contains(pair)) {
       icon = Icons.auto_awesome;
@@ -126,24 +184,17 @@ class GeneratorPage extends StatelessWidget {
       backgroundColor: theme.colorScheme.background,
       body: Center(
         child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.center, // se usa para centrar el contenido
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Text('A random AWESOME idea:'),
-            // se hizo un refactor de BigCard a un widget separado
             BigCard(pair: pair),
-            // SizedBox es un widget que se usa para agregar espacio entre los widgets
             SizedBox(height: 16),
-            // ElevatedButton es un widget que se usa para crear botones
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  // onPressed es un callback que se llama cuando el usuario presiona el botón
                   onPressed: () {
                     appState.getNext();
                   },
-                  // child es un widget que se usa para mostrar el contenido del botón
                   child: Text('Subir Imagen'),
                 ),
                 SizedBox(width: 16),
@@ -160,7 +211,6 @@ class GeneratorPage extends StatelessWidget {
         ),
       ),
     );
-// ...
   }
 }
 
@@ -171,7 +221,6 @@ class BigCard extends StatelessWidget {
   });
 
   final WordPair pair;
-  // Se establece una imagen por defecto
   final String imagePath = 'assets/images/image_with_pneumonia.jpeg';
 
   @override
@@ -180,7 +229,7 @@ class BigCard extends StatelessWidget {
     final style = theme.textTheme.displayMedium!.copyWith(
       color: theme.colorScheme.onPrimary,
     );
-    // Añadir foto desde local
+
     return Card(
       color: theme.colorScheme.primary,
       child: Padding(
@@ -197,7 +246,8 @@ class BigCard extends StatelessWidget {
                 size: 48,
               ),
             );
-          },)
+          },
+        ),
       ),
     );
   }
