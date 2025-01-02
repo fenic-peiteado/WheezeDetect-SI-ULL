@@ -28,7 +28,7 @@ class GeneratorPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'This app is a Flutter project that uses a pre-trained machine learning model to detect pneumonia in chest X-ray images.',
+                      'Thiss app is a Flutter project that uses a pre-trained machine learning model to detect pneumonia.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 18),
                     ),

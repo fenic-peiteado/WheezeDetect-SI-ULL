@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'image_history_provider.dart';
+import 'dart:convert';
+
+class HistoryPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Obtener el historial desde el Provider
+    final imageHistory = Provider.of<ImageHistoryProvider>(context).imageHistory;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Analysis History'),
+      ),
+      body: imageHistory.isEmpty
+          ? Center(
+              child: Text('No analysis history available.'),
+            )
+          : ListView.builder(
+              itemCount: imageHistory.length,
+              itemBuilder: (context, index) {
+                var item = imageHistory[index];
+                return ListTile(
+                  title: Text('Result: ${item['result']}'),
+                  subtitle: Text('Date: ${DateTime.now().toString()}'),
+                  leading: Image.memory(
+                    base64Decode(item['image']),
+                    width: 50,
+                    height: 50,
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.remove_circle),
+                    onPressed: () {
+                      // Eliminar el historial si lo deseas
+                      Provider.of<ImageHistoryProvider>(context, listen: false)
+                          .removeFromHistory(index);
+                    },
+                  ),
+                );
+              },
+            ),
+    );
+  }
+}

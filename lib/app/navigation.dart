@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../features/home/home_page.dart';
 import '../features/data_analysis/data_analysis_page.dart';
+import '../features/history_page/history_page.dart';  // Importamos la nueva página de historial
 
 class NavigationPage extends StatefulWidget {
   @override
@@ -10,27 +11,29 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int selectedIndex = 0;
 
-  // List of pages to display based on the selected index
+  // Lista de páginas ahora incluye la nueva página de historial
   final List<Widget> pages = [
     HomePage(),
     DataAnalysisPage(),
+    HistoryPage(),  // Página de historial
   ];
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Body with IndexedStack to switch between the pages
+      // Cuerpo con IndexedStack para cambiar entre las páginas
       body: IndexedStack(
         index: selectedIndex,
         children: pages,
       ),
 
-      // Bottom navigation bar
+      // Barra de navegación inferior
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: (index) {
           setState(() {
-            selectedIndex = index; // Update selected page on tap
+            selectedIndex = index;  // Actualizamos la página seleccionada
           });
         },
         items: [
@@ -42,15 +45,18 @@ class _NavigationPageState extends State<NavigationPage> {
             icon: Icon(Icons.analytics),
             label: 'Data Analysis',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),  // Ícono para historial
+            label: 'History',
+          ),
         ],
-        // Customize the appearance of the navigation bar for a better UI
-        type: BottomNavigationBarType.fixed, // Fixed to avoid shifting items
-        selectedItemColor: Theme.of(context).colorScheme.secondary, // Color when selected
-        unselectedItemColor: Theme.of(context).unselectedWidgetColor, // Color when unselected
-        showUnselectedLabels: true, // Show labels even when unselected
-        selectedFontSize: 16, // Font size for selected item
-        unselectedFontSize: 12, // Font size for unselected item
-        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor, // Background color
+        type: BottomNavigationBarType.fixed,  // Para evitar el cambio de posición de los íconos
+        selectedItemColor: Theme.of(context).colorScheme.secondary,
+        unselectedItemColor: Theme.of(context).unselectedWidgetColor,
+        showUnselectedLabels: true,
+        selectedFontSize: 16,
+        unselectedFontSize: 12,
+        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
       ),
     );
   }
