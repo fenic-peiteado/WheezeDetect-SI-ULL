@@ -8,29 +8,48 @@ class GeneratorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
-    IconData icon = appState.favorites.contains(pair) ? Icons.auto_awesome : Icons.dangerous_outlined;
-    const  String imagePath = 'assets/images/image_with_pneumonia.jpeg';
+    
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ImageCard(imagePath: imagePath),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: appState.getNext,
-                  child: Text('Subirr Imagen'),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Línea superior gruesa
+              Container(
+                width: double.infinity,
+                height: 5,
+                color: Colors.blueAccent, // Puedes cambiar el color
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'This app is a Flutter project that uses a pre-trained machine learning model to detect pneumonia in chest X-ray images.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'How to Use:',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      '1. Upload an image of a chest X-ray by clicking "Upload Image".\n'
+                      '2. After the image is uploaded, click "Analyze Image" to process it and get results.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(height: 20),
+                  ],
                 ),
-                ElevatedButton.icon(
-                  onPressed: appState.toggleFavorite,
-                  icon: Icon(icon),
-                  label: Text('Analizar Imagen'),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

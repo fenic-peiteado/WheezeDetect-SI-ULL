@@ -11,17 +11,16 @@ class DataAnalysisPage extends StatefulWidget {
 }
 
 class DataAnalysisPageState extends State<DataAnalysisPage> {
-  String buttonText = "Send Data";
-  String? _imageUrl;
+  String resultText = '';
   File? _imageFile;
   Uint8List? _webImage;
+  Uint8List? processedImage;
 
-  
   Future<void> sendData() async {
-    if (_imageUrl == null && _imageFile == null && _webImage == null) {
-      setState(() {
-        buttonText = 'No image selected';
-      });
+    if (_imageFile == null && _webImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select an image before analyzing.')),
+      );
       return;
     }
 
@@ -49,23 +48,19 @@ class DataAnalysisPageState extends State<DataAnalysisPage> {
 
       if (response.statusCode == 200) {
         final responseBody = json.decode(responseData.body);
-        final processedImage = base64Decode(responseBody['processed_image']);
-
         setState(() {
-          buttonText = responseBody['result'];
-          _imageUrl = 'data:image/png;base64,' + base64Encode(processedImage);
+          resultText = responseBody['result'];
+          processedImage = base64Decode(responseBody['processed_image']);
         });
       } else {
-        setState(() {
-          buttonText = 'Error with status code: ${response.statusCode}';
-        });
-        print('Error: ${response.statusCode} - ${responseData.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${response.statusCode}')),
+        );
       }
     } catch (e) {
-      setState(() {
-        buttonText = 'Error sending data' + e.toString();
-      });
-      print('Exception: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
 
@@ -77,7 +72,6 @@ class DataAnalysisPageState extends State<DataAnalysisPage> {
         final webImage = await pickedFile.readAsBytes();
         setState(() {
           _webImage = webImage;
-          _imageUrl = pickedFile.path;
         });
       } else {
         setState(() {
@@ -89,31 +83,58 @@ class DataAnalysisPageState extends State<DataAnalysisPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (_imageUrl != null && kIsWeb)
-            SizedBox(
-              width: 300,
-              height: 300,
-              child: Image.network(_imageUrl!),
-            )
-          else if (_imageFile != null)
-            SizedBox(
-              width: 300,
-              height: 300,
-              child: Image.file(_imageFile!),
-            ),
-          ElevatedButton(
-            onPressed: pickImage,
-            child: Text('Select Image'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Data Analysis'),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_webImage != null)
+                Image.memory(_webImage!, width: 300, height: 300)
+              else if (_imageFile != null)
+                Image.file(_imageFile!, width: 300, height: 300),
+              ElevatedButton(
+                onPressed: pickImage,
+                child: Text('Select Image'),
+              ),
+              ElevatedButton(
+                onPressed: sendData,
+                child: Text('Analyze'),
+              ),
+              if (resultText.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Analysis Result:',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        resultText,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      if (processedImage != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Image.memory(
+                            processedImage!,
+                            width: 300,
+                            height: 300,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: sendData,
-            child: Text(buttonText),
-          ),
-        ],
+        ),
       ),
     );
   }

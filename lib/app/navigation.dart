@@ -10,43 +10,47 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int selectedIndex = 0;
 
+  // List of pages to display based on the selected index
+  final List<Widget> pages = [
+    HomePage(),
+    DataAnalysisPage(),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(
-      builder: (context, setState) => Scaffold(
-      body: Row(
-        children: [
-          NavigationRail(
-            extended: false,
-            destinations: [
-              NavigationRailDestination(
-                icon: Icon(Icons.home),
-                label: Text('Home'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.analytics),
-                label: Text('Data Analysis'),
-              ),
-            ],
-            selectedIndex: selectedIndex,
-            onDestinationSelected: (value) {
-              setState(() {
-                selectedIndex = value;
-              });
-            },
+    return Scaffold(
+      // Body with IndexedStack to switch between the pages
+      body: IndexedStack(
+        index: selectedIndex,
+        children: pages,
+      ),
+
+      // Bottom navigation bar
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: selectedIndex,
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index; // Update selected page on tap
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
-          Expanded(
-            child: IndexedStack( // IndexedStack es un widget que se usa para mostrar solo un widget hijo a la vez
-              index: selectedIndex,
-              children: [
-                HomePage(),
-                DataAnalysisPage(),
-              ],
-            ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.analytics),
+            label: 'Data Analysis',
           ),
         ],
+        // Customize the appearance of the navigation bar for a better UI
+        type: BottomNavigationBarType.fixed, // Fixed to avoid shifting items
+        selectedItemColor: Colors.blueAccent, // Color when selected
+        unselectedItemColor: Colors.grey, // Color when unselected
+        showUnselectedLabels: true, // Show labels even when unselected
+        selectedFontSize: 14, // Font size for selected item
+        unselectedFontSize: 12, // Font size for unselected item
       ),
-    )
     );
   }
 }
