@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class DataService {
-  static const String url = 'https://03a2-34-86-192-105.ngrok-free.app/receive_data';
+  // Este CODIGO YA NO ES NECESARIO
+  static const String url = 'https://df2b-34-16-149-200.ngrok-free.app/receive_data';
 
   static Future<String> sendData(Map<String, dynamic> data) async {
     try {

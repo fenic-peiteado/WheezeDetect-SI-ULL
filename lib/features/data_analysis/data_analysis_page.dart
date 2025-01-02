@@ -28,7 +28,7 @@ class DataAnalysisPageState extends State<DataAnalysisPage> {
     try {
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://1a1a-35-204-172-136.ngrok-free.app/process-image'),
+        Uri.parse('https://df2b-34-16-149-200.ngrok-free.app/process-image'),
       );
 
       if (kIsWeb) {
@@ -63,7 +63,7 @@ class DataAnalysisPageState extends State<DataAnalysisPage> {
       }
     } catch (e) {
       setState(() {
-        buttonText = 'Error sending data';
+        buttonText = 'Error sending data' + e.toString();
       });
       print('Exception: $e');
     }
