@@ -3,7 +3,7 @@
     <application
         android:label="wheezedetect"
         android:name="${applicationName}"
-        android:icon="/android/app/src/main/res/mipmap-hdpi/launcher_icon.png"  
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"

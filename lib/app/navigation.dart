@@ -45,11 +45,12 @@ class _NavigationPageState extends State<NavigationPage> {
         ],
         // Customize the appearance of the navigation bar for a better UI
         type: BottomNavigationBarType.fixed, // Fixed to avoid shifting items
-        selectedItemColor: Colors.blueAccent, // Color when selected
-        unselectedItemColor: Colors.grey, // Color when unselected
+        selectedItemColor: Theme.of(context).colorScheme.secondary, // Color when selected
+        unselectedItemColor: Theme.of(context).unselectedWidgetColor, // Color when unselected
         showUnselectedLabels: true, // Show labels even when unselected
-        selectedFontSize: 14, // Font size for selected item
+        selectedFontSize: 16, // Font size for selected item
         unselectedFontSize: 12, // Font size for unselected item
+        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor, // Background color
       ),
     );
   }

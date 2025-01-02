@@ -16,10 +16,10 @@ class GeneratorPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Línea superior gruesa
-              Container(
-                width: double.infinity,
-                height: 5,
-                color: Colors.blueAccent, // Puedes cambiar el color
+              ImageCard(
+                imagePath: 'assets/icons/icono_sin_fondo.png',
+                width: 300,
+                height: 300,
               ),
               SizedBox(height: 20),
               Padding(
