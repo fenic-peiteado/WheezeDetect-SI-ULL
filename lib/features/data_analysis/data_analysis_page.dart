@@ -4,20 +4,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:whezzedetect/shared/models/widgets/background_gradient.dart';
 import '../history_page/image_history_provider.dart';
+import '../../shared/models/widgets/elevated_contend_Card.dart';
+import '../../shared/models/widgets/custom_button.dart';
 
 class DataAnalysisPage extends StatefulWidget {
   @override
-  DataAnalysisPageState createState() => DataAnalysisPageState();
+  _DataAnalysisPageState createState() => _DataAnalysisPageState();
 }
 
-class DataAnalysisPageState extends State<DataAnalysisPage> {
+class _DataAnalysisPageState extends State<DataAnalysisPage> {
   String resultText = '';
   File? _imageFile;
   Uint8List? _webImage;
   Uint8List? processedImage;
+  bool isLoading = false; // Variable para controlar la carga
 
   // Método para enviar la imagen y obtener el resultado del análisis
   Future<void> sendData() async {
@@ -28,10 +31,14 @@ class DataAnalysisPageState extends State<DataAnalysisPage> {
       return;
     }
 
+    setState(() {
+      isLoading = true; // Mostrar el indicador de carga
+    });
+
     try {
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://735a-34-81-220-1.ngrok-free.app/process-image'),
+        Uri.parse('https://c67b-35-194-181-8.ngrok-free.app/process-image'),
       );
 
       if (kIsWeb) {
@@ -58,6 +65,7 @@ class DataAnalysisPageState extends State<DataAnalysisPage> {
               : base64Encode(File(_imageFile!.path).readAsBytesSync()),
           'result': responseBody['result'],
           'processedImage': base64Decode(responseBody['processed_image']),
+          'date': DateTime.now().toString(), // Agregar fecha y hora actual
         });
         setState(() {
           resultText = responseBody['result'];
@@ -72,6 +80,10 @@ class DataAnalysisPageState extends State<DataAnalysisPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
+    } finally {
+      setState(() {
+        isLoading = false; // Ocultar el indicador de carga
+      });
     }
   }
 
@@ -95,92 +107,102 @@ class DataAnalysisPageState extends State<DataAnalysisPage> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Data Analysis'),
-    ),
-    body: Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return GradientBackground(
+      child: Scaffold(
+      //backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: Text('Data Analysis'),
+        backgroundColor: colorScheme.primaryContainer,
+      ),
+      body: Center(
+        child: Stack(
           children: [
-            // Mostrar la imagen seleccionada si está disponible
-            if (_webImage != null)
-              Image.memory(
-                _webImage!,
-                width: 300,
-                height: 300,
-              )
-            else if (_imageFile != null)
-              Image.file(
-                _imageFile!,
-                width: 300,
-                height: 300,
-              ),
+            SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 20),
+                  Center(
+                  // ElevatedContentCard que contiene la imagen y los botones
+                  child: ElevatedContentCard(
+                    elevation: 5.0,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Mostrar la imagen seleccionada si está disponible
+                        if (_webImage != null)
+                          Image.memory(
+                            _webImage!,
+                            width: 300,
+                            height: 300,
+                          )
+                        else if (_imageFile != null)
+                          Image.file(
+                            _imageFile!,
+                            width: 300,
+                            height: 300,
+                          ),
+                        
+                        SizedBox(height: 20),
 
-            // Espaciado para separar los botones
-            SizedBox(height: 20),
+                        // Fila de botones
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Botón para seleccionar la imagen
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: CustomButton(
+                                label: 'Select Image',
+                                onPressed: pickImage,
+                              ),
+                            ),
 
-            // Fila de botones
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Centra los botones
-              children: [
-                // Botón para seleccionar la imagen
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: ElevatedButton(
-                    onPressed: pickImage,
-                    child: Text('Select Image'),
-                  ),
-                ),
-
-                // Botón para analizar la imagen
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: ElevatedButton(
-                    onPressed: sendData,
-                    child: Text('Analyze'),
-                  ),
-                ),
-              ],
-            ),
-
-            // Mostrar el resultado del análisis si existe
-            if (resultText.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Column(
-                  children: [
-                    Text(
-                      'Analysis Result:',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      resultText,
-                      style: TextStyle(fontSize: 18),
-                    ),
-
-                    // Mostrar la imagen procesada si está disponible
-                    if (processedImage != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Image.memory(
-                          processedImage!,
-                          width: 300,
-                          height: 300,
+                            // Botón para analizar la imagen
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: CustomButton(
+                                label: 'Analyze',
+                                onPressed: sendData,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
+
+                  SizedBox(height: 20),
+
+                  // Mostrar el resultado del análisis si existe
+                  if (resultText.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: ElevatedContentCard(
+                        text: 'Analysis Result:\n$resultText',
+                        image: processedImage != null
+                            ? Image.memory(
+                                processedImage!,
+                                width: 300,
+                                height: 300,
+                              )
+                            : null,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (isLoading)
+              Center(
+                child: CircularProgressIndicator(),
               ),
           ],
         ),
       ),
-    ),
-  );
-}
+    )
+    );
+  }
 }

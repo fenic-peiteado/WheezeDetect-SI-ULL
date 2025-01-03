@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:whezzedetect/shared/models/widgets/background_gradient.dart';
 import 'image_history_provider.dart';
 import 'dart:convert';
 
@@ -8,10 +9,13 @@ class HistoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Obtener el historial desde el Provider
     final imageHistory = Provider.of<ImageHistoryProvider>(context).imageHistory;
-
-    return Scaffold(
+     final colorScheme = Theme.of(context).colorScheme;
+    return GradientBackground(
+      child:Scaffold(
+        // backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Analysis History'),
+        backgroundColor: colorScheme.primaryContainer,
       ),
       body: imageHistory.isEmpty
           ? Center(
@@ -23,7 +27,7 @@ class HistoryPage extends StatelessWidget {
                 var item = imageHistory[index];
                 return ListTile(
                   title: Text('Result: ${item['result']}'),
-                  subtitle: Text('Date: ${DateTime.now().toString()}'),
+                  subtitle: Text('Date: ${item['date']}'),
                   leading: Image.memory(
                     base64Decode(item['image']),
                     width: 50,
@@ -40,6 +44,7 @@ class HistoryPage extends StatelessWidget {
                 );
               },
             ),
+    )
     );
   }
 }

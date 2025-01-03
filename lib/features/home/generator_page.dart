@@ -1,54 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:whezzedetect/shared/models/widgets/background_gradient.dart';
 import '../../shared/models/app_state.dart';
-import 'image_card.dart';
+import '../../shared//models/widgets/elevated_contend_Card.dart';
 
 class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
-    
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Línea superior gruesa
-              ImageCard(
-                imagePath: 'assets/icons/icono_sin_fondo.png',
-                width: 300,
-                height: 300,
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Thiss app is a Flutter project that uses a pre-trained machine learning model to detect pneumonia.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      'How to Use:',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      '1. Upload an image of a chest X-ray by clicking "Upload Image".\n'
-                      '2. After the image is uploaded, click "Analyze Image" to process it and get results.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 20),
-                  ],
+    final colorScheme = Theme.of(context).colorScheme;
+    final typography = Theme.of(context).textTheme;
+
+    return GradientBackground(
+      child: Scaffold(
+        // backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text('Home'),
+          backgroundColor: colorScheme.primaryContainer,
+        ),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                ElevatedContentCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'This app is a Flutter project that uses a pre-trained machine learning model to detect pneumonia.',
+                        style: typography.bodyLarge?.copyWith(
+                          // fontWeight: FontWeight.bold, // Removido para no estar todo en negrita
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'How to Use:',
+                        style: typography.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold, // Solo el título en negrita
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        '1. Upload an image of a chest X-ray by clicking "Select Image".',
+                        style: typography.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        '2. After the image is uploaded, click "Analyze" to process it and get results.',
+                        style: typography.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
