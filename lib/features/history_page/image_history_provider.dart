@@ -28,7 +28,7 @@ class ImageHistoryProvider extends ChangeNotifier {
             'processedImage': item['processedImage'],
             'date': item['date'] ?? 'Unknown Date', // Proveer fecha predeterminada
           };
-        }).toList();
+        }).toList().reversed.toList(); // Invertir la lista para mostrar la más reciente primero
 
         notifyListeners();
       } catch (e) {
@@ -47,7 +47,7 @@ class ImageHistoryProvider extends ChangeNotifier {
 
   // Método para agregar un nuevo elemento al historial
   void addToHistory(Map<String, dynamic> newItem) {
-    _imageHistory.add({
+    _imageHistory.insert(0,{
       ...newItem,
       'date': newItem['date'] ?? DateTime.now().toString(), // Garantizar fecha
     });

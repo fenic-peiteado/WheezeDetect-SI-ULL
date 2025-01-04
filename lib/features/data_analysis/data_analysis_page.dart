@@ -38,7 +38,7 @@ class _DataAnalysisPageState extends State<DataAnalysisPage> {
     try {
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://c67b-35-194-181-8.ngrok-free.app/process-image'),
+        Uri.parse('https://handy-huge-glider.ngrok-free.app/process-image'),
       );
 
       if (kIsWeb) {
@@ -64,7 +64,7 @@ class _DataAnalysisPageState extends State<DataAnalysisPage> {
               ? base64Encode(_webImage!)
               : base64Encode(File(_imageFile!.path).readAsBytesSync()),
           'result': responseBody['result'],
-          'processedImage': base64Decode(responseBody['processed_image']),
+          'processedImage': responseBody['processed_image'],
           'date': DateTime.now().toString(), // Agregar fecha y hora actual
         });
         setState(() {

@@ -28,18 +28,35 @@ class HistoryPage extends StatelessWidget {
                 return ListTile(
                   title: Text('Result: ${item['result']}'),
                   subtitle: Text('Date: ${item['date']}'),
-                  leading: Image.memory(
-                    base64Decode(item['image']),
+                  leading: Image.memory(base64Decode(item['processedImage']),
                     width: 50,
                     height: 50,
                   ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.remove_circle),
-                    onPressed: () {
-                      // Eliminar el historial si lo deseas
-                      Provider.of<ImageHistoryProvider>(context, listen: false)
-                          .removeFromHistory(index);
-                    },
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          icon: Icon(Icons.image),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                content: Image.memory(
+                                   base64Decode(item['processedImage']),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      IconButton(
+                        icon: Icon(Icons.remove_circle),
+                        onPressed: () {
+                          // Eliminar el historial si lo deseas
+                          Provider.of<ImageHistoryProvider>(context, listen: false)
+                              .removeFromHistory(index);
+                        },
+                      ),
+                    ],
                   ),
                 );
               },
