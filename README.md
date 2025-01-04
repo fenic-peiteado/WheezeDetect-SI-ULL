@@ -33,6 +33,26 @@ Este projecto detecta presencia de pneumonia en radiografias de torax.
 
 ![Foto de desarrollo de la aplicacion](/img/app-foto.png)
 
+> Foto de la aplicacion en funcionamiento.
+
+![Foto de la aplicacion en funcionamiento](/img/home.png)
+
+> Foto de la aplicacion en funcionamiento data_analysis.
+
+![Foto de la aplicacion en funcionamiento data_analysis](/img/data_analysis.png)
+
+> Foto de la aplicacion en funcionamiento result normal.
+
+![Foto de la aplicacion en funcionamiento result normal](/img/result_normal.png)
+
+> Foto de la aplicacion en funcionamiento result pneumonia.
+
+![Foto de la aplicacion en funcionamiento result pneumonia](/img/result_pneumonia.png)
+
+> Foto de la aplicacion en funcionamiento history.
+
+![Foto de la aplicacion en funcionamiento history](/img/history.png)
+
 
 
 
