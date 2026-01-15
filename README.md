@@ -1,6 +1,4 @@
 # Wheezedetect
-
-
 Este projecto detecta presencia de pneumonia en radiografias de torax.
 
 ## Ejemplo de radiografia con pneumonia:
